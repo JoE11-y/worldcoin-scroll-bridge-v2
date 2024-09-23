@@ -2,8 +2,6 @@
 pragma solidity ^0.8.15;
 
 import {WorldIDBridge} from "src/abstract/WorldIDBridge.sol";
-import {SemaphoreTreeDepthValidator} from "src/utils/SemaphoreTreeDepthValidator.sol";
-import {SemaphoreVerifier} from "src/SemaphoreVerifier.sol";
 import {ScrollCrossDomainOwnable} from "src/ScrollCrossDomainOwnable.sol";
 
 /// @title ScrollWorldID Mock

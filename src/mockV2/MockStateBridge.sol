@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.15;
 
 import {IScrollMessenger} from "@scroll-tech/contracts/libraries/IScrollMessenger.sol";
-import {IRootHistory} from "./interfaces/IRootHistory.sol";
-import {IWorldIDIdentityManager} from "./interfaces/IWorldIDIdentityManager.sol";
+import {IRootHistory} from "../interfaces/IRootHistory.sol";
+import {IWorldIDIdentityManager} from "../interfaces/IWorldIDIdentityManager.sol";
 import {Ownable2Step} from "openzeppelin-contracts/access/Ownable2Step.sol";
 
 contract MockScrollStateBridge is Ownable2Step {
@@ -15,6 +15,9 @@ contract MockScrollStateBridge is Ownable2Step {
 
     /// @notice Ethereum World ID Identity Manager Address
     address public immutable worldIDAddress;
+
+    /// @notice Amount of gas purchased on Scroll for propagateRoot
+    uint32 internal _gasLimitPropagateRoot;
 
     /// @notice The default gas limit amount to buy on Scroll
     uint32 public constant DEFAULT_SCROLL_GAS_LIMIT = 268000;
@@ -48,6 +51,7 @@ contract MockScrollStateBridge is Ownable2Step {
         scrollWorldIDAddress = _scrollWorldIDAddress;
         worldIDAddress = _worldIDIdentityManager;
         scrollMessengerAddress = _scrollMessengerAddress;
+        _gasLimitPropagateRoot = DEFAULT_SCROLL_GAS_LIMIT;
     }
 
     function propagateRoot(address _refundAddress) external payable {

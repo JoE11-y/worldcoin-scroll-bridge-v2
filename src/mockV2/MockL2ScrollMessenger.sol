@@ -1,35 +1,12 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.15;
 
 import {IL2ScrollMessenger} from "@scroll-tech/contracts/L2/IL2ScrollMessenger.sol";
 
 contract MockL2ScrollMessenger is IL2ScrollMessenger {
     address private messageSender;
     mapping(address => uint256) public nonces;
-
-    /// @notice Emitted when a cross domain message is sent.
-    /// @param sender The address of the sender who initiates the message.
-    /// @param target The address of target contract to call.
-    /// @param value The amount of value passed to the target contract.
-    /// @param messageNonce The nonce of the message.
-    /// @param gasLimit The optional gas limit passed to L1 or L2.
-    /// @param message The calldata passed to the target contract.
-    event SentMessage(
-        address indexed sender,
-        address indexed target,
-        uint256 value,
-        uint256 messageNonce,
-        uint256 gasLimit,
-        bytes message
-    );
-
-    /// @notice Emitted when a cross domain message is relayed successfully.
-    /// @param messageHash The hash of the message.
-    event RelayedMessage(bytes32 indexed messageHash);
-
-    /// @notice Emitted when a cross domain message is failed to relay.
-    /// @param messageHash The hash of the message.
-    event FailedRelayedMessage(bytes32 indexed messageHash);
+    uint256 private _nonce;
 
     /**
      *
@@ -44,10 +21,11 @@ contract MockL2ScrollMessenger is IL2ScrollMessenger {
 
     function sendMessage(address target, uint256 value, bytes calldata message, uint256 gasLimit)
         external
+        payable
         override
     {
         // out of scope
-        emit SentMessage(msg.sender, address, value, nonce, gasLimit, message);
+        emit SentMessage(msg.sender, target, value, _nonce, gasLimit, message);
     }
 
     function sendMessage(
@@ -56,9 +34,9 @@ contract MockL2ScrollMessenger is IL2ScrollMessenger {
         bytes calldata message,
         uint256 gasLimit,
         address refundAddress
-    ) external override {
+    ) external payable override {
         // out of scope
-        emit SentMessage(msg.sender, address, value, nonce, gasLimit, message);
+        emit SentMessage(msg.sender, target, value, _nonce, gasLimit, message);
     }
 
     /**

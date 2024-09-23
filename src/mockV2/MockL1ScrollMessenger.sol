@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.15;
 
 import {IScrollMessenger} from "@scroll-tech/contracts/libraries/IScrollMessenger.sol";
 import {IL2ScrollMessenger} from "@scroll-tech/contracts/L2/IL2ScrollMessenger.sol";
@@ -8,30 +8,6 @@ contract MockL1ScrollMessenger is IScrollMessenger {
     address private messageSender;
     IL2ScrollMessenger private l2Messenger;
     uint256 private nonce;
-
-    /// @notice Emitted when a cross domain message is sent.
-    /// @param sender The address of the sender who initiates the message.
-    /// @param target The address of target contract to call.
-    /// @param value The amount of value passed to the target contract.
-    /// @param messageNonce The nonce of the message.
-    /// @param gasLimit The optional gas limit passed to L1 or L2.
-    /// @param message The calldata passed to the target contract.
-    event SentMessage(
-        address indexed sender,
-        address indexed target,
-        uint256 value,
-        uint256 messageNonce,
-        uint256 gasLimit,
-        bytes message
-    );
-
-    /// @notice Emitted when a cross domain message is relayed successfully.
-    /// @param messageHash The hash of the message.
-    event RelayedMessage(bytes32 indexed messageHash);
-
-    /// @notice Emitted when a cross domain message is failed to relay.
-    /// @param messageHash The hash of the message.
-    event FailedRelayedMessage(bytes32 indexed messageHash);
 
     constructor(address _l2Messenger) {
         l2Messenger = IL2ScrollMessenger(_l2Messenger);
@@ -50,6 +26,7 @@ contract MockL1ScrollMessenger is IScrollMessenger {
 
     function sendMessage(address target, uint256 value, bytes calldata message, uint256 gasLimit)
         external
+        payable
         override
     {
         // set message sender as xDomainMessageSender
@@ -58,7 +35,7 @@ contract MockL1ScrollMessenger is IScrollMessenger {
         l2Messenger.relayMessage(messageSender, target, value, nonce, message);
         // increment message nonce
         nonce++;
-        emit SentMessage(msg.sender, address, value, nonce, gasLimit, message);
+        emit SentMessage(msg.sender, target, value, nonce, gasLimit, message);
     }
 
     function sendMessage(
@@ -67,13 +44,13 @@ contract MockL1ScrollMessenger is IScrollMessenger {
         bytes calldata message,
         uint256 gasLimit,
         address refundAddress
-    ) external override {
+    ) external payable override {
         // set message sender as xDomainMessageSender
         messageSender = msg.sender;
         // Simulate sending a message to L2 messenger
         l2Messenger.relayMessage(messageSender, target, value, nonce, message);
         // increment nonce
         nonce++;
-        emit SentMessage(msg.sender, address, value, nonce, gasLimit, message);
+        emit SentMessage(msg.sender, target, value, nonce, gasLimit, message);
     }
 }
