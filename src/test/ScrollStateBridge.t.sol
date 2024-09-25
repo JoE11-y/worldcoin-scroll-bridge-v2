@@ -1,15 +1,12 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.15;
 
-import "forge-std/Test.sol";
-
 import {ScrollStateBridge} from "src/ScrollStateBridge.sol";
-import {MockWorldIDIdentityManager} from "src/mock/MockWorldIDIdentityManager.sol";
 import {ScrollWorldID} from "src/ScrollWorldID.sol";
+import {MockWorldIDIdentityManager} from "src/mocks/MockWorldIDIdentityManager.sol";
 
 import {PRBTest} from "@prb/test/PRBTest.sol";
 import {StdCheats} from "forge-std/StdCheats.sol";
-import {console} from "forge-std/console.sol";
 
 /// @title State Bridge Test
 /// @author Worldcoin
