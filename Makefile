@@ -4,7 +4,7 @@ all: install build
 # ===== Basic Development Rules =======================================================================================
 
 # Install forge dependencies (not needed if submodules are already initialized).
-install:; sh ./script/install_deps.sh && yarn install
+install:; forge install && yarn install
 
 # Build contracts and inject the Poseidon library.
 build:; forge build
@@ -26,6 +26,8 @@ snapshot:; FOUNDRY_PROFILE=bench forge snapshot
 deploy: install build; node --no-warnings src/script/deploy.js deploy
 
 deploy-testnet: install build; node --no-warnings src/script/deploy.js deploy-testnet
+
+deploy-devnet: install build; node --no-warnings src/script/deploy.js deploy-devnet
 
 mock: install build; node --no-warnings src/script/deploy.js mock
 
